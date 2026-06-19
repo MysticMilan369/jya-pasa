@@ -1,0 +1,52 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    env:
+      NODE_ENV: test
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Build
+        run: pnpm build
+
+      - name: Run unit tests
+        run: pnpm test
+
+      # -------------------------------------------------
+      # Future additions (when needed):
+      # -------------------------------------------------
+      # - PostgreSQL service container (integration tests)
+      # - Redis service container (cache / queue tests)
+      # - Database migrations step
+      # - Kafka service (event-driven architecture tests)
+      # - BullMQ workers (background job tests)
+      # - E2E tests (run on PR → main or main branch only)
+      # -------------------------------------------------

@@ -38,18 +38,18 @@ When the AI is uncertain, an escalation flag is returned. The visitor can reques
 
 ## Tech stack
 
-| Layer | Technology |
-|---|---|
-| Framework | NestJS + TypeScript |
-| Event streaming | Apache Kafka (KafkaJS) |
-| Real-time | Socket.io via @nestjs/websockets |
-| AI provider | OpenAI GPT-4o-mini (provider-agnostic — swap via env) |
-| Vector search | PostgreSQL + pgvector (cosine similarity) |
-| Cache | Redis — AI response cache + JWT refresh store |
-| Auth | JWT with refresh rotation + role-based guards |
-| Roles | ADMIN · AGENT · VISITOR (session token) |
-| Database | PostgreSQL 16 |
-| Local infra | Docker Compose |
+| Layer           | Technology                                            |
+| --------------- | ----------------------------------------------------- |
+| Framework       | NestJS + TypeScript                                   |
+| Event streaming | Apache Kafka (KafkaJS)                                |
+| Real-time       | Socket.io via @nestjs/websockets                      |
+| AI provider     | OpenAI GPT-4o-mini (provider-agnostic — swap via env) |
+| Vector search   | PostgreSQL + pgvector (cosine similarity)             |
+| Cache           | Redis — AI response cache + JWT refresh store         |
+| Auth            | JWT with refresh rotation + role-based guards         |
+| Roles           | ADMIN · AGENT · VISITOR (session token)               |
+| Database        | PostgreSQL 16                                         |
+| Local infra     | Docker Compose                                        |
 
 ---
 
@@ -65,7 +65,7 @@ When the AI is uncertain, an escalation flag is returned. The visitor can reques
 
 ## Build progress
 
-- [x] Repo setup — Docker Compose, Husky, commitlint, ESLint
+- [x] Foundation sprint — project infrastructure, database, Redis, Prisma, configuration, logging, health checks, and developer tooling
 - [ ] Auth module — JWT refresh rotation, ADMIN and AGENT roles
 - [ ] Visitor session — server-generated token, localStorage persistence
 - [ ] Kafka infrastructure — topics, producer service, consumer base, DLQ
@@ -89,29 +89,35 @@ When the AI is uncertain, an escalation flag is returned. The visitor can reques
 ```bash
 git clone https://github.com/MysticMilan369/jya-pasa
 cd jya-pasa
+
 cp .env.example .env
-# fill in OPENAI_API_KEY and other required vars
+
 docker compose up -d
-npm install
-npm run start:dev
+
+pnpm install
+
+pnpm prisma generate
+
+pnpm prisma migrate dev
+
+pnpm start:dev
 ```
 
 Kafka UI available at `http://localhost:8080` after `docker compose up`.
 
 ---
 
-## Environment variables
+## Current Environment variables
 
-| Variable | Required | Description |
-|---|---|---|
-| `DATABASE_URL` | Yes | PostgreSQL connection string |
-| `REDIS_URL` | Yes | Redis connection string |
-| `KAFKA_BROKERS` | Yes | Kafka broker list |
-| `JWT_ACCESS_SECRET` | Yes | Access token signing secret |
-| `JWT_REFRESH_SECRET` | Yes | Refresh token signing secret |
-| `AI_PROVIDER` | Yes | `openai` \| `anthropic` \| `gemini` |
-| `OPENAI_API_KEY` | If openai | OpenAI API key |
-| `ANTHROPIC_API_KEY` | If anthropic | Anthropic API key |
+| Variable       | Required | Description                                                 |
+| -------------- | -------- | ----------------------------------------------------------- |
+| `NODE_ENV`     | Yes      | Application environment (`development`, `production`, etc.) |
+| `PORT`         | Yes      | Port number for the application                             |
+| `DATABASE_URL` | Yes      | PostgreSQL connection URL                                   |
+| `REDIS_HOST`   | Yes      | Redis server host                                           |
+| `REDIS_PORT`   | Yes      | Redis server port                                           |
+
+Additional variables for authentication, Kafka, and AI providers will be introduced in future sprints.
 
 Full `.env.example` in repo root.
 
@@ -119,12 +125,14 @@ Full `.env.example` in repo root.
 
 ## Project status
 
-**Currently:** Sprint 1 — foundation and infrastructure setup
+**Currently:** Sprint 2 — Authentication and user management
+
+**Completed:** Sprint 1 — Foundation and infrastructure setup
 
 **Target:** Working demo deployed at bkmilan.com.np
 
 ---
 
-*Part of a two-project portfolio. See also: [kredits](https://github.com/MysticMilan369/kredits) — voucher and loyalty platform.*
+_Part of a two-project portfolio. See also: [kredits](https://github.com/MysticMilan369/kredits) — voucher and loyalty platform._
 
-*Built by [Mystic Milan](https://bkmilan.com.np) · [hello.milanbk@gmail.com](mailto:hello.milanbk@gmail.com)*
+_Built by [Mystic Milan](https://bkmilan.com.np) · [hello.milanbk@gmail.com](mailto:hello.milanbk@gmail.com)_
